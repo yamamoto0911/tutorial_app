@@ -17,7 +17,7 @@
     <tr>
       <td>所属：<%= @user.department.present? ? @user.department : "未設定" %></td>
       <td>氏名：<%= @user.name %></td>
-      <td>出勤日数</td>
+      <td>出勤日数 <%= @worked_sum %></td>
       <td>月の末日<%= @last_day.to_s(:date) %></td>
     </tr>
   </table>
@@ -41,7 +41,7 @@
         <th></th>
       </tr>
     </thead>
-  </table>
+  
   
   <tbody>
     <% @dates.each do |day| %>
@@ -62,9 +62,24 @@
             <%= button_to "退社", user_attendances_path(@user), class: "btn btn-xs btn-primary" %>
         <% end %>
         </td>
-        <td></td>
+        <td>
+          <% if day.started_at.present? && day.finished_at.present? %>
+            <%= working_times(day.started_at, day.finished_at) %>
+            <% seconds = (day.finished_at - day.started_at).to_i %>
+            <% @total_seconds = @total_seconds.to_i + seconds %>
+          <% end %>
+        </td>
         <td></td>
       </tr>
     <% end %>
   </tbody>
+   <tfoot>
+     <tr>
+       <td colspan = "2"><%= format_basic_time(@user.basic_time).to_f * @worked_sum %></td>
+       <td colspan = "6"></td>
+       <td><%= working_times_sum(@total_seconds) unless @total_seconds.nil? %></td>
+       <td></td>
+     </tr>
+   </tfoot>
+  </table>
 </div>
