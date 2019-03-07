@@ -21,7 +21,7 @@ class UsersController < ApplicationController
         record.save
       end
     end
-    @dates = @user.attendances.where('worked_on >= ? and worked_on <= ?', @first_day, @last_day).order('worked_on')
+    @dates = user_attendances_month_date
     @worked_sum = @dates.where.not(started_at: nil).count
   end
 
